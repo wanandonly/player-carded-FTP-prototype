@@ -1,3 +1,4 @@
+import { POINTS_PER_CORRECT_PICK } from '../data/types'
 import type { Pick, ResolvedOutcome, ScoreResult } from '../data/types'
 
 export function computeScoreResult(pick: Pick, outcomes: ResolvedOutcome[]): ScoreResult {
@@ -18,6 +19,7 @@ export function computeScoreResult(pick: Pick, outcomes: ResolvedOutcome[]): Sco
     gameWeekId: pick.gameWeekId,
     totalPicks: pick.playerIds.length,
     correctPicks: hitPlayerIds.length,
+    points: hitPlayerIds.length * POINTS_PER_CORRECT_PICK,
     hitPlayerIds,
     missedPlayerIds,
   }

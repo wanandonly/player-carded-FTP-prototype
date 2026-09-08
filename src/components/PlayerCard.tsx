@@ -20,7 +20,7 @@ export function PlayerCard({ entry, selected, disabled, onToggle }: PlayerCardPr
       disabled={disabled && !selected}
       className={`flex w-full flex-col gap-3 rounded-xl border p-4 text-left transition ${
         selected
-          ? 'border-fuchsia-400 bg-fuchsia-500/10 ring-1 ring-fuchsia-400/50'
+          ? 'border-amber-400 bg-amber-500/10 ring-1 ring-amber-400/50'
           : 'border-slate-800 bg-slate-900/60 hover:border-slate-600'
       } ${disabled && !selected ? 'cursor-not-allowed opacity-40' : 'cursor-pointer'}`}
     >
@@ -28,7 +28,7 @@ export function PlayerCard({ entry, selected, disabled, onToggle }: PlayerCardPr
         <div>
           <p className="font-semibold text-white">{player.name}</p>
           <p className="text-xs text-slate-400">
-            <span style={{ color: team.color }}>{team.shortName}</span> vs {opponent.shortName} ·{' '}
+            <span className="font-semibold text-slate-300">{team.shortName}</span> vs {opponent.shortName} ·{' '}
             {player.position}
           </p>
         </div>

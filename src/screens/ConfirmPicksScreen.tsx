@@ -1,3 +1,4 @@
+import { MAX_PICKS } from '../data/types'
 import type { ShortlistEntry } from '../data/types'
 import { RiskBadge } from '../components/RiskBadge'
 import { ScreenHeader } from '../components/ScreenHeader'
@@ -10,6 +11,7 @@ interface ConfirmPicksScreenProps {
 }
 
 export function ConfirmPicksScreen({ gameWeekLabel, picks, onBack, onLockIn }: ConfirmPicksScreenProps) {
+  const picksRemaining = MAX_PICKS - picks.length
   const averageRisk = Math.round(
     picks.reduce((sum, entry) => sum + entry.risk.riskPercent, 0) / picks.length,
   )
@@ -23,6 +25,14 @@ export function ConfirmPicksScreen({ gameWeekLabel, picks, onBack, onLockIn }: C
           Your picks average <span className="font-semibold text-white">{averageRisk}%</span> risk
         </p>
       </div>
+
+      {picksRemaining > 0 && (
+        <div className="rounded-xl border border-amber-500/30 bg-amber-500/10 p-4">
+          <p className="text-sm text-amber-300">
+            You need {picksRemaining} more pick{picksRemaining === 1 ? '' : 's'} before you can lock in.
+          </p>
+        </div>
+      )}
 
       <ul className="flex flex-col gap-2">
         {picks.map((entry) => (
@@ -51,8 +61,9 @@ export function ConfirmPicksScreen({ gameWeekLabel, picks, onBack, onLockIn }: C
         </button>
         <button
           type="button"
+          disabled={picksRemaining > 0}
           onClick={onLockIn}
-          className="flex-1 rounded-xl bg-fuchsia-500 py-3 font-semibold text-white shadow-lg shadow-fuchsia-500/20 transition hover:bg-fuchsia-400"
+          className="flex-1 rounded-xl bg-amber-500 py-3 font-semibold text-slate-900 shadow-lg shadow-amber-500/20 transition hover:bg-amber-400 disabled:cursor-not-allowed disabled:bg-slate-700 disabled:text-slate-400 disabled:shadow-none"
         >
           Lock In Picks
         </button>

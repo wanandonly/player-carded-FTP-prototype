@@ -83,8 +83,10 @@ export interface ScoreResult {
   gameWeekId: string
   totalPicks: number
   correctPicks: number
+  points: number
   hitPlayerIds: string[]
   missedPlayerIds: string[]
 }
 
 export const MAX_PICKS = 7
+export const POINTS_PER_CORRECT_PICK = 100

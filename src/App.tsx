@@ -6,8 +6,10 @@ import { buildShortlist } from './game/buildShortlist'
 import type { Screen } from './game/gameState'
 import { resolveGameWeek } from './game/resolveGameWeek'
 import { computeScoreResult } from './game/scoring'
+import { AppHeader } from './components/AppHeader'
 import { ConfirmPicksScreen } from './screens/ConfirmPicksScreen'
 import { GameWeekScreen } from './screens/GameWeekScreen'
+import { LeaderboardScreen } from './screens/LeaderboardScreen'
 import { ResultsScreen } from './screens/ResultsScreen'
 
 interface Resolution {
@@ -20,6 +22,7 @@ function App() {
   const [screen, setScreen] = useState<Screen>('shortlist')
   const [selectedPlayerIds, setSelectedPlayerIds] = useState<string[]>([])
   const [resolution, setResolution] = useState<Resolution | null>(null)
+  const [showLeaderboard, setShowLeaderboard] = useState(false)
 
   const picks = shortlist.filter((entry) => selectedPlayerIds.includes(entry.player.id))
 
@@ -47,33 +50,47 @@ function App() {
 
   return (
     <div className="min-h-screen bg-slate-950 text-slate-100">
-      {screen === 'shortlist' && (
-        <GameWeekScreen
-          gameWeekLabel={gameWeek.label}
-          shortlist={shortlist}
-          selectedPlayerIds={selectedPlayerIds}
-          onTogglePlayer={handleTogglePlayer}
-          onConfirm={() => setScreen('confirm')}
-        />
-      )}
+      <AppHeader
+        activeTab={showLeaderboard ? 'leaderboard' : 'picks'}
+        onNavigate={(tab) => setShowLeaderboard(tab === 'leaderboard')}
+      />
 
-      {screen === 'confirm' && (
-        <ConfirmPicksScreen
+      {showLeaderboard ? (
+        <LeaderboardScreen
           gameWeekLabel={gameWeek.label}
-          picks={picks}
-          onBack={() => setScreen('shortlist')}
-          onLockIn={handleLockIn}
+          you={resolution ? { correctPicks: resolution.score.correctPicks, totalPicks: resolution.score.totalPicks } : null}
         />
-      )}
+      ) : (
+        <>
+          {screen === 'shortlist' && (
+            <GameWeekScreen
+              gameWeekLabel={gameWeek.label}
+              shortlist={shortlist}
+              selectedPlayerIds={selectedPlayerIds}
+              onTogglePlayer={handleTogglePlayer}
+              onConfirm={() => setScreen('confirm')}
+            />
+          )}
 
-      {screen === 'results' && resolution && (
-        <ResultsScreen
-          gameWeekLabel={gameWeek.label}
-          picks={picks}
-          outcomesByPlayerId={new Map(resolution.outcomes.map((o) => [o.playerId, o]))}
-          score={resolution.score}
-          onPlayAgain={handlePlayAgain}
-        />
+          {screen === 'confirm' && (
+            <ConfirmPicksScreen
+              gameWeekLabel={gameWeek.label}
+              picks={picks}
+              onBack={() => setScreen('shortlist')}
+              onLockIn={handleLockIn}
+            />
+          )}
+
+          {screen === 'results' && resolution && (
+            <ResultsScreen
+              gameWeekLabel={gameWeek.label}
+              picks={picks}
+              outcomesByPlayerId={new Map(resolution.outcomes.map((o) => [o.playerId, o]))}
+              score={resolution.score}
+              onPlayAgain={handlePlayAgain}
+            />
+          )}
+        </>
       )}
     </div>
   )

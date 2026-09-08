@@ -21,12 +21,13 @@ export function ResultsScreen({
     <div className="mx-auto flex max-w-2xl flex-col gap-6 px-4 py-8">
       <ScreenHeader eyebrow={gameWeekLabel} title="Results" subtitle="Here's how your picks landed." />
 
-      <div className="rounded-xl border border-fuchsia-400/30 bg-fuchsia-500/10 p-6 text-center">
+      <div className="rounded-xl border border-amber-400/30 bg-amber-500/10 p-6 text-center">
         <p className="text-sm text-slate-300">You got</p>
         <p className="text-4xl font-bold text-white">
           {score.correctPicks} / {score.totalPicks}
         </p>
         <p className="text-sm text-slate-300">correct</p>
+        <p className="mt-3 text-lg font-semibold text-amber-400">+{score.points} pts</p>
       </div>
 
       <ul className="flex flex-col gap-2">
@@ -67,7 +68,7 @@ export function ResultsScreen({
       <button
         type="button"
         onClick={onPlayAgain}
-        className="rounded-xl bg-fuchsia-500 py-3 font-semibold text-white shadow-lg shadow-fuchsia-500/20 transition hover:bg-fuchsia-400"
+        className="rounded-xl bg-amber-500 py-3 font-semibold text-slate-900 shadow-lg shadow-amber-500/20 transition hover:bg-amber-400"
       >
         Play Again
       </button>
