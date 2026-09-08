@@ -19,16 +19,32 @@ export function ResultsScreen({
   score,
   onPlayAgain,
 }: ResultsScreenProps) {
+  const isJackpot = score.correctPredictions === score.totalPredictions
+
   return (
     <div className="mx-auto flex max-w-2xl flex-col gap-6 px-4 py-8">
       <ScreenHeader eyebrow={gameWeekLabel} title="Results" subtitle="Here's how your predictions landed." />
 
-      <div className="rounded-xl border border-amber-400/30 bg-amber-500/10 p-6 text-center">
+      <div
+        className={`rounded-xl border p-6 text-center ${
+          isJackpot
+            ? 'border-amber-400 bg-amber-500/20 ring-2 ring-amber-400/60'
+            : 'border-amber-400/30 bg-amber-500/10'
+        }`}
+      >
+        {isJackpot && (
+          <p className="text-sm font-bold uppercase tracking-wider text-amber-300">Jackpot!</p>
+        )}
         <p className="text-sm text-slate-300">You got</p>
         <p className="text-4xl font-bold text-white">
           {score.correctPredictions} / {score.totalPredictions}
         </p>
         <p className="text-sm text-slate-300">correct</p>
+        {isJackpot && (
+          <p className="mt-2 text-sm font-semibold text-amber-300">
+            Perfect week — you've won the jackpot prize!
+          </p>
+        )}
       </div>
 
       <ul className="flex flex-col gap-2">

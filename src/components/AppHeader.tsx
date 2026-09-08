@@ -1,10 +1,14 @@
 interface AppHeaderProps {
-  activeTab: 'picks' | 'leaderboard'
-  onNavigate: (tab: 'picks' | 'leaderboard') => void
-  canViewLeaderboard: boolean
+  activeTab: "picks" | "leaderboard";
+  onNavigate: (tab: "picks" | "leaderboard") => void;
+  canViewLeaderboard: boolean;
 }
 
-export function AppHeader({ activeTab, onNavigate, canViewLeaderboard }: AppHeaderProps) {
+export function AppHeader({
+  activeTab,
+  onNavigate,
+  canViewLeaderboard,
+}: AppHeaderProps) {
   return (
     <header className="sticky top-0 z-10 border-b border-slate-800 bg-slate-950/95 backdrop-blur">
       <div className="mx-auto flex max-w-3xl items-center justify-between gap-4 px-4 py-3">
@@ -15,9 +19,11 @@ export function AppHeader({ activeTab, onNavigate, canViewLeaderboard }: AppHead
         <nav className="flex gap-1 rounded-full bg-slate-900 p-1">
           <button
             type="button"
-            onClick={() => onNavigate('picks')}
-            className={`rounded-full px-3 py-1.5 text-sm font-semibold transition ${
-              activeTab === 'picks' ? 'bg-amber-500 text-slate-900' : 'text-slate-400 hover:text-slate-200'
+            onClick={() => onNavigate("picks")}
+            className={`rounded-full px-3 py-1.5 text-sm font-semibold cursor-pointer transition ${
+              activeTab === "picks"
+                ? "bg-amber-500 text-slate-900"
+                : "text-slate-400 hover:text-slate-200"
             }`}
           >
             Picks
@@ -25,9 +31,11 @@ export function AppHeader({ activeTab, onNavigate, canViewLeaderboard }: AppHead
           {canViewLeaderboard && (
             <button
               type="button"
-              onClick={() => onNavigate('leaderboard')}
-              className={`rounded-full px-3 py-1.5 text-sm font-semibold transition ${
-                activeTab === 'leaderboard' ? 'bg-amber-500 text-slate-900' : 'text-slate-400 hover:text-slate-200'
+              onClick={() => onNavigate("leaderboard")}
+              className={`rounded-full px-3 py-1.5 text-sm font-semibold cursor-pointer transition ${
+                activeTab === "leaderboard"
+                  ? "bg-amber-500 text-slate-900"
+                  : "text-slate-400 hover:text-slate-200"
               }`}
             >
               Leaderboard
@@ -36,5 +44,5 @@ export function AppHeader({ activeTab, onNavigate, canViewLeaderboard }: AppHead
         </nav>
       </div>
     </header>
-  )
+  );
 }

@@ -5,6 +5,7 @@ const RULES = [
   "Predict “Will be booked” or “Won’t be booked” for every player.",
   `Once all ${PICKS_PER_GAME_WEEK} are predicted, review and lock in — no changes after that.`,
   `Your score is how many of the ${PICKS_PER_GAME_WEEK} you got right, shown as X / ${PICKS_PER_GAME_WEEK}.`,
+  `Get all ${PICKS_PER_GAME_WEEK} predictions right to win the jackpot prize.`,
 ]
 
 export function HowToPlay() {

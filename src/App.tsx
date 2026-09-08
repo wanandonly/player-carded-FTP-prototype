@@ -1,4 +1,4 @@
-import { useMemo, useState } from 'react'
+import { useEffect, useMemo, useState } from 'react'
 import { gameWeek } from './data/gameWeeks.mock'
 import type { Pick, ResolvedOutcome, ScoreResult } from './data/types'
 import { buildShortlist } from './game/buildShortlist'
@@ -24,6 +24,10 @@ function App() {
   const [predictions, setPredictions] = useState<Record<string, boolean>>({})
   const [resolution, setResolution] = useState<Resolution | null>(null)
   const [showLeaderboard, setShowLeaderboard] = useState(false)
+
+  useEffect(() => {
+    window.scrollTo(0, 0)
+  }, [screen, showLeaderboard])
 
   function handleSetPrediction(playerId: string, willBeBooked: boolean | null) {
     setPredictions((current) => {
