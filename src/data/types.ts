@@ -18,6 +18,9 @@ export interface Referee {
   id: string
   name: string
   avgCardsPerGame: number
+  gamesOfficiatedSeason: number
+  yellowCardsIssuedSeason: number
+  redCardsIssuedSeason: number
 }
 
 export interface Fixture {
