@@ -26,7 +26,7 @@ function PastResultsList({ pastEntries }: { pastEntries: HistoryEntry[] }) {
               className="flex items-center justify-between rounded-lg border border-slate-800 bg-slate-900/40 px-4 py-3"
             >
               <div>
-                <p className="text-sm text-slate-300">{new Date(entry.playedAt).toLocaleString()}</p>
+                <p className="text-sm text-slate-300">{new Date(entry.playedAt).toLocaleDateString()}</p>
                 {entryIsJackpot && <p className="text-xs font-semibold text-amber-400">Jackpot!</p>}
               </div>
               <p className="text-lg font-bold text-white">
