@@ -1,56 +1,161 @@
-import { leaderboard } from '../data/leaderboard.mock'
+import { useMemo, useState } from 'react'
+import { leaderboard, leaderboardOutcomes } from '../data/leaderboard.mock'
+import { computeScoreResult } from '../game/scoring'
+import type { PlayerPrediction, ResolvedOutcome, ScoreResult, ShortlistEntry } from '../data/types'
+import { RiskBadge } from '../components/RiskBadge'
 import { ScreenHeader } from '../components/ScreenHeader'
+
+interface LeaderboardYou {
+  predictions: PlayerPrediction[]
+  outcomesByPlayerId: Map<string, ResolvedOutcome>
+  score: ScoreResult
+}
 
 interface LeaderboardScreenProps {
   gameWeekLabel: string
-  you: { correctPredictions: number; totalPredictions: number } | null
+  gameWeekId: string
+  shortlist: ShortlistEntry[]
+  you: LeaderboardYou | null
 }
 
-interface Row {
+interface LeaderboardRow {
   id: string
   name: string
-  correctPredictions: number
-  totalPredictions: number
   isYou: boolean
+  predictionsByPlayerId: Map<string, boolean>
+  outcomesByPlayerId: Map<string, ResolvedOutcome>
+  score: ScoreResult
 }
 
-export function LeaderboardScreen({ gameWeekLabel, you }: LeaderboardScreenProps) {
-  const rows: Row[] = [
-    ...leaderboard.map((entry) => ({ ...entry, isYou: false })),
-    {
-      id: 'you',
-      name: 'You',
-      correctPredictions: you?.correctPredictions ?? 0,
-      totalPredictions: you?.totalPredictions ?? 0,
-      isYou: true,
-    },
-  ].sort((a, b) => b.correctPredictions - a.correctPredictions)
+export function LeaderboardScreen({ gameWeekLabel, gameWeekId, shortlist, you }: LeaderboardScreenProps) {
+  const [expandedId, setExpandedId] = useState<string | null>(null)
+
+  const mockOutcomesByPlayerId = useMemo(
+    () => new Map(leaderboardOutcomes.map((outcome) => [outcome.playerId, outcome])),
+    [],
+  )
+
+  const rows: LeaderboardRow[] = useMemo(() => {
+    const rivalRows = leaderboard.map((entry) => {
+      const score = computeScoreResult({ gameWeekId, predictions: entry.predictions }, leaderboardOutcomes)
+      return {
+        id: entry.id,
+        name: entry.name,
+        isYou: false,
+        predictionsByPlayerId: new Map(entry.predictions.map((p) => [p.playerId, p.willBeBooked])),
+        outcomesByPlayerId: mockOutcomesByPlayerId,
+        score,
+      }
+    })
+
+    const youRow: LeaderboardRow[] = you
+      ? [
+          {
+            id: 'you',
+            name: 'You',
+            isYou: true,
+            predictionsByPlayerId: new Map(you.predictions.map((p) => [p.playerId, p.willBeBooked])),
+            outcomesByPlayerId: you.outcomesByPlayerId,
+            score: you.score,
+          },
+        ]
+      : []
+
+    return [...rivalRows, ...youRow].sort((a, b) => b.score.correctPredictions - a.score.correctPredictions)
+  }, [gameWeekId, mockOutcomesByPlayerId, you])
+
+  function toggleRow(id: string) {
+    setExpandedId((current) => (current === id ? null : id))
+  }
 
   return (
     <div className="mx-auto flex max-w-2xl flex-col gap-6 px-4 py-8">
       <ScreenHeader eyebrow={gameWeekLabel} title="Leaderboard" subtitle="Ranked by correct predictions this game week." />
 
       <ul className="flex flex-col gap-2">
-        {rows.map((row, index) => (
-          <li
-            key={row.id}
-            className={`flex items-center justify-between rounded-lg border px-4 py-3 ${
-              row.isYou
-                ? 'border-amber-400 bg-amber-500/10 ring-1 ring-amber-400/50'
-                : 'border-slate-800 bg-slate-900/40'
-            }`}
-          >
+        {rows.map((row, index) => {
+          const expanded = expandedId === row.id
+
+          return (
+            <li
+              key={row.id}
+              className={`rounded-lg border ${
+                row.isYou ? 'border-amber-400 bg-amber-500/10 ring-1 ring-amber-400/50' : 'border-slate-800 bg-slate-900/40'
+              }`}
+            >
+              <button
+                type="button"
+                onClick={() => toggleRow(row.id)}
+                aria-expanded={expanded}
+                className="flex w-full cursor-pointer items-center justify-between px-4 py-3 text-left"
+              >
+                <div className="flex items-center gap-3">
+                  <span className="flex h-6 w-6 items-center justify-center rounded-full bg-slate-800 text-xs font-bold text-slate-300">
+                    {index + 1}
+                  </span>
+                  <p className={`font-medium ${row.isYou ? 'text-amber-300' : 'text-white'}`}>{row.name}</p>
+                </div>
+                <div className="flex items-center gap-3">
+                  <p className="text-lg font-bold text-white">
+                    {row.score.correctPredictions}/{row.score.totalPredictions}
+                  </p>
+                  <span
+                    aria-hidden="true"
+                    className={`text-slate-400 transition-transform ${expanded ? 'rotate-180' : ''}`}
+                  >
+                    ▾
+                  </span>
+                </div>
+              </button>
+
+              {expanded && (
+                <ul className="flex flex-col gap-2 border-t border-slate-800 px-4 py-3">
+                  {shortlist.map((entry) => {
+                    const outcome = row.outcomesByPlayerId.get(entry.player.id)
+                    const prediction = row.predictionsByPlayerId.get(entry.player.id)
+                    const hit = outcome !== undefined && prediction !== undefined && prediction === outcome.wasBooked
+
+                    return (
+                      <li
+                        key={entry.player.id}
+                        className={`flex items-center justify-between rounded-lg border px-3 py-2 ${
+                          hit ? 'border-emerald-500/30 bg-emerald-500/10' : 'border-slate-800 bg-slate-900/40'
+                        }`}
+                      >
+                        <div className="flex min-w-0 items-center gap-2">
+                          <span
+                            className={`flex h-5 w-5 shrink-0 items-center justify-center rounded-full text-[10px] font-bold ${
+                              hit ? 'bg-emerald-500 text-slate-900' : 'bg-slate-700 text-slate-400'
+                            }`}
+                          >
+                            {hit ? '✓' : '✕'}
+                          </span>
+                          <p className="truncate text-sm font-medium text-white">{entry.player.name}</p>
+                          <span className="shrink-0 whitespace-nowrap rounded-full bg-amber-500/10 px-2.5 py-0.5 text-xs font-semibold text-amber-300">
+                            {prediction ? 'Will be booked' : "Won't be booked"}
+                          </span>
+                        </div>
+                        <RiskBadge riskPercent={entry.risk.riskPercent} />
+                      </li>
+                    )
+                  })}
+                </ul>
+              )}
+            </li>
+          )
+        })}
+
+        {you === null && (
+          <li className="flex items-center justify-between rounded-lg border border-amber-400 bg-amber-500/10 px-4 py-3 ring-1 ring-amber-400/50">
             <div className="flex items-center gap-3">
               <span className="flex h-6 w-6 items-center justify-center rounded-full bg-slate-800 text-xs font-bold text-slate-300">
-                {index + 1}
+                {rows.length + 1}
               </span>
-              <p className={`font-medium ${row.isYou ? 'text-amber-300' : 'text-white'}`}>{row.name}</p>
+              <p className="font-medium text-amber-300">You</p>
             </div>
-            <p className="text-lg font-bold text-white">
-              {you === null && row.isYou ? 'Play this game week to join' : `${row.correctPredictions}/${row.totalPredictions}`}
-            </p>
+            <p className="text-sm font-semibold text-slate-300">Play this game week to join</p>
           </li>
-        ))}
+        )}
       </ul>
     </div>
   )

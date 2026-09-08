@@ -56,7 +56,7 @@ export function ResultsScreen({
                 >
                   {hit ? '✓' : '✕'}
                 </span>
-                <div>
+                <div className="min-w-0">
                   <p className="font-medium text-white">{entry.player.name}</p>
                   <p className="text-xs text-slate-400">
                     You predicted {prediction ? 'booked' : 'not booked'} — {outcomeText}

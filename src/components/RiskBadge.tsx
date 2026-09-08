@@ -15,7 +15,7 @@ export function RiskBadge({ riskPercent, size = 'sm' }: RiskBadgeProps) {
 
   return (
     <span
-      className={`inline-flex items-center gap-1 rounded-full font-semibold ring-1 ${tone.bg} ${tone.text} ${tone.ring} ${sizeClasses}`}
+      className={`inline-flex shrink-0 items-center gap-1 whitespace-nowrap rounded-full font-semibold ring-1 ${tone.bg} ${tone.text} ${tone.ring} ${sizeClasses}`}
     >
       {riskPercent}% risk
     </span>

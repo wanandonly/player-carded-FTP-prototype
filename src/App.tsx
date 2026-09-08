@@ -6,6 +6,7 @@ import type { Screen } from './game/gameState'
 import { resolveGameWeek } from './game/resolveGameWeek'
 import { computeScoreResult } from './game/scoring'
 import { AppHeader } from './components/AppHeader'
+import { HowToPlay } from './components/HowToPlay'
 import { ConfirmPicksScreen } from './screens/ConfirmPicksScreen'
 import { GameWeekScreen } from './screens/GameWeekScreen'
 import { LeaderboardScreen } from './screens/LeaderboardScreen'
@@ -53,21 +54,31 @@ function App() {
     setPredictions({})
     setResolution(null)
     setScreen('shortlist')
+    setShowLeaderboard(false)
   }
+
+  const outcomesByPlayerId = useMemo(
+    () => (resolution ? new Map(resolution.outcomes.map((o) => [o.playerId, o])) : null),
+    [resolution],
+  )
 
   return (
     <div className="min-h-screen bg-slate-950 text-slate-100">
       <AppHeader
         activeTab={showLeaderboard ? 'leaderboard' : 'picks'}
         onNavigate={(tab) => setShowLeaderboard(tab === 'leaderboard')}
+        canViewLeaderboard={resolution !== null}
       />
+      <HowToPlay />
 
       {showLeaderboard ? (
         <LeaderboardScreen
           gameWeekLabel={gameWeek.label}
+          gameWeekId={gameWeek.id}
+          shortlist={shortlist}
           you={
-            resolution
-              ? { correctPredictions: resolution.score.correctPredictions, totalPredictions: resolution.score.totalPredictions }
+            resolution && outcomesByPlayerId
+              ? { predictions: resolution.pick.predictions, outcomesByPlayerId, score: resolution.score }
               : null
           }
         />
@@ -93,11 +104,11 @@ function App() {
             />
           )}
 
-          {screen === 'results' && resolution && (
+          {screen === 'results' && resolution && outcomesByPlayerId && (
             <ResultsScreen
               gameWeekLabel={gameWeek.label}
               shortlist={shortlist}
-              outcomesByPlayerId={new Map(resolution.outcomes.map((o) => [o.playerId, o]))}
+              outcomesByPlayerId={outcomesByPlayerId}
               predictionsByPlayerId={new Map(resolution.pick.predictions.map((p) => [p.playerId, p.willBeBooked]))}
               score={resolution.score}
               onPlayAgain={handlePlayAgain}
