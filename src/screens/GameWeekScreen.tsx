@@ -1,33 +1,36 @@
-import { MAX_PICKS } from '../data/types'
-import type { ShortlistEntry } from '../data/types'
-import { PlayerCard } from '../components/PlayerCard'
-import { ScreenHeader } from '../components/ScreenHeader'
+import { PICKS_PER_GAME_WEEK } from "../data/types";
+import type { ShortlistEntry } from "../data/types";
+import { PlayerCard } from "../components/PlayerCard";
+import { ScreenHeader } from "../components/ScreenHeader";
 
 interface GameWeekScreenProps {
-  gameWeekLabel: string
-  shortlist: ShortlistEntry[]
-  selectedPlayerIds: string[]
-  onTogglePlayer: (playerId: string) => void
-  onConfirm: () => void
+  gameWeekLabel: string;
+  shortlist: ShortlistEntry[];
+  predictions: Record<string, boolean>;
+  onSetPrediction: (playerId: string, willBeBooked: boolean | null) => void;
+  onConfirm: () => void;
 }
 
 export function GameWeekScreen({
   gameWeekLabel,
   shortlist,
-  selectedPlayerIds,
-  onTogglePlayer,
+  predictions,
+  onSetPrediction,
   onConfirm,
 }: GameWeekScreenProps) {
-  const picksRemaining = MAX_PICKS - selectedPlayerIds.length
+  const answeredCount = shortlist.filter(
+    (entry) => entry.player.id in predictions,
+  ).length;
+  const remaining = PICKS_PER_GAME_WEEK - answeredCount;
 
   return (
     <div className="mx-auto flex max-w-3xl flex-col gap-6 px-4 py-8">
       <ScreenHeader
         title={gameWeekLabel}
-        subtitle="Pick the players you think will be booked this game week."
+        subtitle="Predict whether each player will be booked this game week."
         right={
           <span className="rounded-full bg-slate-800 px-3 py-1 text-sm font-medium text-slate-200">
-            {selectedPlayerIds.length} / {MAX_PICKS} picked
+            {answeredCount} / {PICKS_PER_GAME_WEEK} predicted
           </span>
         }
       />
@@ -37,9 +40,14 @@ export function GameWeekScreen({
           <PlayerCard
             key={entry.player.id}
             entry={entry}
-            selected={selectedPlayerIds.includes(entry.player.id)}
-            disabled={picksRemaining === 0}
-            onToggle={() => onTogglePlayer(entry.player.id)}
+            prediction={
+              entry.player.id in predictions
+                ? predictions[entry.player.id]
+                : null
+            }
+            onSetPrediction={(willBeBooked) =>
+              onSetPrediction(entry.player.id, willBeBooked)
+            }
           />
         ))}
       </div>
@@ -47,15 +55,15 @@ export function GameWeekScreen({
       <div className="sticky bottom-4">
         <button
           type="button"
-          disabled={picksRemaining > 0}
+          disabled={remaining > 0}
           onClick={onConfirm}
-          className="w-full rounded-xl bg-amber-500 py-3 font-semibold text-slate-900 shadow-lg shadow-amber-500/20 transition hover:bg-amber-400 disabled:cursor-not-allowed disabled:bg-slate-700 disabled:text-slate-400 disabled:shadow-none"
+          className="w-full rounded-xl bg-amber-500 py-3 font-semibold text-slate-900 shadow-lg shadow-amber-500/20 cursor-pointer transition hover:bg-amber-400 disabled:cursor-not-allowed disabled:bg-slate-700 disabled:text-slate-400 disabled:shadow-none"
         >
-          {picksRemaining > 0
-            ? `Select ${picksRemaining} more player${picksRemaining === 1 ? '' : 's'}`
-            : `Review Picks (${selectedPlayerIds.length})`}
+          {remaining > 0
+            ? `Predict ${remaining} more player${remaining === 1 ? "" : "s"}`
+            : "Review Predictions"}
         </button>
       </div>
     </div>
-  )
+  );
 }

@@ -4,36 +4,42 @@ import { ScreenHeader } from '../components/ScreenHeader'
 
 interface ResultsScreenProps {
   gameWeekLabel: string
-  picks: ShortlistEntry[]
+  shortlist: ShortlistEntry[]
   outcomesByPlayerId: Map<string, ResolvedOutcome>
+  predictionsByPlayerId: Map<string, boolean>
   score: ScoreResult
   onPlayAgain: () => void
 }
 
 export function ResultsScreen({
   gameWeekLabel,
-  picks,
+  shortlist,
   outcomesByPlayerId,
+  predictionsByPlayerId,
   score,
   onPlayAgain,
 }: ResultsScreenProps) {
   return (
     <div className="mx-auto flex max-w-2xl flex-col gap-6 px-4 py-8">
-      <ScreenHeader eyebrow={gameWeekLabel} title="Results" subtitle="Here's how your picks landed." />
+      <ScreenHeader eyebrow={gameWeekLabel} title="Results" subtitle="Here's how your predictions landed." />
 
       <div className="rounded-xl border border-amber-400/30 bg-amber-500/10 p-6 text-center">
         <p className="text-sm text-slate-300">You got</p>
         <p className="text-4xl font-bold text-white">
-          {score.correctPicks} / {score.totalPicks}
+          {score.correctPredictions} / {score.totalPredictions}
         </p>
         <p className="text-sm text-slate-300">correct</p>
-        <p className="mt-3 text-lg font-semibold text-amber-400">+{score.points} pts</p>
       </div>
 
       <ul className="flex flex-col gap-2">
-        {picks.map((entry) => {
+        {shortlist.map((entry) => {
           const outcome = outcomesByPlayerId.get(entry.player.id)
-          const hit = outcome?.wasBooked ?? false
+          const prediction = predictionsByPlayerId.get(entry.player.id)
+          const hit = outcome !== undefined && prediction !== undefined && prediction === outcome.wasBooked
+
+          const outcomeText = outcome?.wasBooked
+            ? `booked (${outcome.cardType === 'red' ? 'red card' : 'yellow card'})`
+            : 'not booked'
 
           return (
             <li
@@ -53,9 +59,7 @@ export function ResultsScreen({
                 <div>
                   <p className="font-medium text-white">{entry.player.name}</p>
                   <p className="text-xs text-slate-400">
-                    {hit
-                      ? `Booked (${outcome?.cardType === 'red' ? 'red card' : 'yellow card'})`
-                      : 'Not booked'}
+                    You predicted {prediction ? 'booked' : 'not booked'} — {outcomeText}
                   </p>
                 </div>
               </div>

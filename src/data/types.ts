@@ -67,9 +67,14 @@ export interface ShortlistEntry {
   risk: RiskIndicator
 }
 
+export interface PlayerPrediction {
+  playerId: string
+  willBeBooked: boolean
+}
+
 export interface Pick {
   gameWeekId: string
-  playerIds: string[]
+  predictions: PlayerPrediction[]
 }
 
 export interface ResolvedOutcome {
@@ -81,12 +86,10 @@ export interface ResolvedOutcome {
 
 export interface ScoreResult {
   gameWeekId: string
-  totalPicks: number
-  correctPicks: number
-  points: number
-  hitPlayerIds: string[]
-  missedPlayerIds: string[]
+  totalPredictions: number
+  correctPredictions: number
+  correctPlayerIds: string[]
+  incorrectPlayerIds: string[]
 }
 
-export const MAX_PICKS = 7
-export const POINTS_PER_CORRECT_PICK = 100
+export const PICKS_PER_GAME_WEEK = 7

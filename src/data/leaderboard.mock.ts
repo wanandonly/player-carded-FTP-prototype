@@ -1,16 +1,16 @@
 export interface LeaderboardEntry {
   id: string
   name: string
-  correctPicks: number
-  totalPicks: number
+  correctPredictions: number
+  totalPredictions: number
 }
 
 export const leaderboard: LeaderboardEntry[] = [
-  { id: 'l-1', name: 'CardCollector92', correctPicks: 6, totalPicks: 7 },
-  { id: 'l-2', name: 'RefWatcher', correctPicks: 5, totalPicks: 7 },
-  { id: 'l-3', name: 'BookedIt', correctPicks: 5, totalPicks: 7 },
-  { id: 'l-4', name: 'YellowPeril', correctPicks: 4, totalPicks: 7 },
-  { id: 'l-5', name: 'TacticalFoul', correctPicks: 4, totalPicks: 7 },
-  { id: 'l-6', name: 'DirtyDuelist', correctPicks: 3, totalPicks: 7 },
-  { id: 'l-7', name: 'CleanSheetSam', correctPicks: 2, totalPicks: 7 },
+  { id: 'l-1', name: 'CardCollector92', correctPredictions: 6, totalPredictions: 7 },
+  { id: 'l-2', name: 'RefWatcher', correctPredictions: 5, totalPredictions: 7 },
+  { id: 'l-3', name: 'BookedIt', correctPredictions: 5, totalPredictions: 7 },
+  { id: 'l-4', name: 'YellowPeril', correctPredictions: 4, totalPredictions: 7 },
+  { id: 'l-5', name: 'TacticalFoul', correctPredictions: 4, totalPredictions: 7 },
+  { id: 'l-6', name: 'DirtyDuelist', correctPredictions: 3, totalPredictions: 7 },
+  { id: 'l-7', name: 'CleanSheetSam', correctPredictions: 2, totalPredictions: 7 },
 ]

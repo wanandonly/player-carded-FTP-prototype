@@ -1,45 +1,34 @@
-import { POINTS_PER_CORRECT_PICK } from '../data/types'
 import { leaderboard } from '../data/leaderboard.mock'
 import { ScreenHeader } from '../components/ScreenHeader'
 
 interface LeaderboardScreenProps {
   gameWeekLabel: string
-  you: { correctPicks: number; totalPicks: number } | null
+  you: { correctPredictions: number; totalPredictions: number } | null
 }
 
 interface Row {
   id: string
   name: string
-  correctPicks: number
-  totalPicks: number
-  points: number
+  correctPredictions: number
+  totalPredictions: number
   isYou: boolean
 }
 
 export function LeaderboardScreen({ gameWeekLabel, you }: LeaderboardScreenProps) {
   const rows: Row[] = [
-    ...leaderboard.map((entry) => ({
-      ...entry,
-      points: entry.correctPicks * POINTS_PER_CORRECT_PICK,
-      isYou: false,
-    })),
+    ...leaderboard.map((entry) => ({ ...entry, isYou: false })),
     {
       id: 'you',
       name: 'You',
-      correctPicks: you?.correctPicks ?? 0,
-      totalPicks: you?.totalPicks ?? 0,
-      points: (you?.correctPicks ?? 0) * POINTS_PER_CORRECT_PICK,
+      correctPredictions: you?.correctPredictions ?? 0,
+      totalPredictions: you?.totalPredictions ?? 0,
       isYou: true,
     },
-  ].sort((a, b) => b.points - a.points)
+  ].sort((a, b) => b.correctPredictions - a.correctPredictions)
 
   return (
     <div className="mx-auto flex max-w-2xl flex-col gap-6 px-4 py-8">
-      <ScreenHeader
-        eyebrow={gameWeekLabel}
-        title="Leaderboard"
-        subtitle={`${POINTS_PER_CORRECT_PICK} points per player carded correctly.`}
-      />
+      <ScreenHeader eyebrow={gameWeekLabel} title="Leaderboard" subtitle="Ranked by correct predictions this game week." />
 
       <ul className="flex flex-col gap-2">
         {rows.map((row, index) => (
@@ -55,16 +44,11 @@ export function LeaderboardScreen({ gameWeekLabel, you }: LeaderboardScreenProps
               <span className="flex h-6 w-6 items-center justify-center rounded-full bg-slate-800 text-xs font-bold text-slate-300">
                 {index + 1}
               </span>
-              <div>
-                <p className={`font-medium ${row.isYou ? 'text-amber-300' : 'text-white'}`}>{row.name}</p>
-                <p className="text-xs text-slate-400">
-                  {you === null && row.isYou
-                    ? 'Play this game week to join'
-                    : `${row.correctPicks} / ${row.totalPicks} correct`}
-                </p>
-              </div>
+              <p className={`font-medium ${row.isYou ? 'text-amber-300' : 'text-white'}`}>{row.name}</p>
             </div>
-            <p className="text-lg font-bold text-white">{row.points} pts</p>
+            <p className="text-lg font-bold text-white">
+              {you === null && row.isYou ? 'Play this game week to join' : `${row.correctPredictions}/${row.totalPredictions}`}
+            </p>
           </li>
         ))}
       </ul>
