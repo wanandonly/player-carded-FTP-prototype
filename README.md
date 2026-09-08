@@ -24,3 +24,4 @@ Then open the printed local URL and click through: predict Will be booked / Won'
 
 - "Who gets booked first" alternate game mode — noted as a future direction, not designed yet
 - Referee profile stats — explored linking out to real referee stats pages and an in-app overlay, settled on neither for now. `Referee` already has extra mock season fields (`gamesOfficiatedSeason`, `yellowCardsIssuedSeason`, `redCardsIssuedSeason` in `src/data/types.ts` / `src/data/referees.mock.ts`) ready to surface once there's a decided interaction (a hover reveal doesn't work on touch, so mobile needs its own answer — tap, or something else — before this ships)
+- Opportunities to integrate betting into the app, could get the live odds for each player to be carded on each pick's card container or we do some suggested bets somewhere would need to think.
