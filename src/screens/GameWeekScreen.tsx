@@ -1,6 +1,7 @@
 import { PICKS_PER_GAME_WEEK } from "../data/types";
 import type { ShortlistEntry } from "../data/types";
 import { PlayerCard } from "../components/PlayerCard";
+import { RiskKey } from "../components/RiskKey";
 import { ScreenHeader } from "../components/ScreenHeader";
 
 interface GameWeekScreenProps {
@@ -50,6 +51,7 @@ export function GameWeekScreen({
             }
           />
         ))}
+        <RiskKey />
       </div>
 
       <div className="sticky bottom-4">

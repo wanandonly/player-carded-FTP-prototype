@@ -1,6 +1,7 @@
 import { useEffect, useMemo, useState } from 'react'
-import { gameWeek } from './data/gameWeeks.mock'
-import type { Pick, ResolvedOutcome, ScoreResult } from './data/types'
+import { gameWeek, gameWeekHasFinished } from './data/gameWeeks.mock'
+import { mockPastResults } from './data/results.mock'
+import type { HistoryEntry, Pick } from './data/types'
 import { buildShortlist } from './game/buildShortlist'
 import type { Screen } from './game/gameState'
 import { resolveGameWeek } from './game/resolveGameWeek'
@@ -12,22 +13,20 @@ import { GameWeekScreen } from './screens/GameWeekScreen'
 import { LeaderboardScreen } from './screens/LeaderboardScreen'
 import { ResultsScreen } from './screens/ResultsScreen'
 
-interface Resolution {
-  pick: Pick
-  outcomes: ResolvedOutcome[]
-  score: ScoreResult
-}
+type Tab = 'picks' | 'leaderboard' | 'results'
 
 function App() {
   const shortlist = useMemo(() => buildShortlist(gameWeek), [])
   const [screen, setScreen] = useState<Screen>('shortlist')
   const [predictions, setPredictions] = useState<Record<string, boolean>>({})
-  const [resolution, setResolution] = useState<Resolution | null>(null)
-  const [showLeaderboard, setShowLeaderboard] = useState(false)
+  const [playedHistory, setPlayedHistory] = useState<HistoryEntry[]>([])
+  const [activeTab, setActiveTab] = useState<Tab>('picks')
+
+  const current = playedHistory[0] ?? null
 
   useEffect(() => {
     window.scrollTo(0, 0)
-  }, [screen, showLeaderboard])
+  }, [screen, activeTab])
 
   function handleSetPrediction(playerId: string, willBeBooked: boolean | null) {
     setPredictions((current) => {
@@ -50,43 +49,58 @@ function App() {
       })),
     }
     const score = computeScoreResult(pick, outcomes)
-    setResolution({ pick, outcomes, score })
-    setScreen('results')
-  }
-
-  function handlePlayAgain() {
+    const entry: HistoryEntry = {
+      id: crypto.randomUUID(),
+      playedAt: new Date().toISOString(),
+      gameWeekId: pick.gameWeekId,
+      predictions: pick.predictions,
+      outcomes,
+      score,
+    }
+    setPlayedHistory((current) => [entry, ...current])
     setPredictions({})
-    setResolution(null)
     setScreen('shortlist')
-    setShowLeaderboard(false)
+    setActiveTab('results')
   }
 
-  const outcomesByPlayerId = useMemo(
-    () => (resolution ? new Map(resolution.outcomes.map((o) => [o.playerId, o])) : null),
-    [resolution],
-  )
+  function handleGoToPicks() {
+    setActiveTab('picks')
+  }
 
   return (
     <div className="min-h-screen bg-slate-950 text-slate-100">
-      <AppHeader
-        activeTab={showLeaderboard ? 'leaderboard' : 'picks'}
-        onNavigate={(tab) => setShowLeaderboard(tab === 'leaderboard')}
-        canViewLeaderboard={resolution !== null}
-      />
+      <AppHeader activeTab={activeTab} onNavigate={setActiveTab} />
       <HowToPlay />
 
-      {showLeaderboard ? (
+      {activeTab === 'leaderboard' && (
         <LeaderboardScreen
           gameWeekLabel={gameWeek.label}
           gameWeekId={gameWeek.id}
           shortlist={shortlist}
+          hasFinished={gameWeekHasFinished}
           you={
-            resolution && outcomesByPlayerId
-              ? { predictions: resolution.pick.predictions, outcomesByPlayerId, score: resolution.score }
+            current
+              ? {
+                  predictions: current.predictions,
+                  outcomesByPlayerId: new Map(current.outcomes.map((o) => [o.playerId, o])),
+                  score: current.score,
+                }
               : null
           }
         />
-      ) : (
+      )}
+
+      {activeTab === 'results' && (
+        <ResultsScreen
+          gameWeekLabel={gameWeek.label}
+          shortlist={shortlist}
+          current={current}
+          pastEntries={[...playedHistory.slice(1), ...mockPastResults]}
+          onGoToPicks={handleGoToPicks}
+        />
+      )}
+
+      {activeTab === 'picks' && (
         <>
           {screen === 'shortlist' && (
             <GameWeekScreen
@@ -105,17 +119,6 @@ function App() {
               predictions={predictions}
               onBack={() => setScreen('shortlist')}
               onLockIn={handleLockIn}
-            />
-          )}
-
-          {screen === 'results' && resolution && outcomesByPlayerId && (
-            <ResultsScreen
-              gameWeekLabel={gameWeek.label}
-              shortlist={shortlist}
-              outcomesByPlayerId={outcomesByPlayerId}
-              predictionsByPlayerId={new Map(resolution.pick.predictions.map((p) => [p.playerId, p.willBeBooked]))}
-              score={resolution.score}
-              onPlayAgain={handlePlayAgain}
             />
           )}
         </>

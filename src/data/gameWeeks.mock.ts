@@ -14,3 +14,9 @@ export const gameWeek: GameWeek = {
     'p-vvd', // LIV, risk 27 (low)
   ],
 }
+
+// Mock flag standing in for "have all of this game week's fixtures kicked off and
+// finished?" — in a real product this would be derived from fixture results, not
+// hand-set. Kept false so the Leaderboard tab demonstrates its locked state by
+// default, since gw-4 is the week currently being played.
+export const gameWeekHasFinished = false

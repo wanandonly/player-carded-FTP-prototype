@@ -92,4 +92,13 @@ export interface ScoreResult {
   incorrectPlayerIds: string[]
 }
 
+export interface HistoryEntry {
+  id: string
+  playedAt: string
+  gameWeekId: string
+  predictions: PlayerPrediction[]
+  outcomes: ResolvedOutcome[]
+  score: ScoreResult
+}
+
 export const PICKS_PER_GAME_WEEK = 7

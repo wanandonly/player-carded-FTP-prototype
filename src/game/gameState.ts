@@ -1,1 +1,1 @@
-export type Screen = 'shortlist' | 'confirm' | 'results'
+export type Screen = 'shortlist' | 'confirm'

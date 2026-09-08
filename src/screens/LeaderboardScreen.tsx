@@ -16,6 +16,7 @@ interface LeaderboardScreenProps {
   gameWeekId: string
   shortlist: ShortlistEntry[]
   you: LeaderboardYou | null
+  hasFinished: boolean
 }
 
 interface LeaderboardRow {
@@ -27,7 +28,7 @@ interface LeaderboardRow {
   score: ScoreResult
 }
 
-export function LeaderboardScreen({ gameWeekLabel, gameWeekId, shortlist, you }: LeaderboardScreenProps) {
+export function LeaderboardScreen({ gameWeekLabel, gameWeekId, shortlist, you, hasFinished }: LeaderboardScreenProps) {
   const [expandedId, setExpandedId] = useState<string | null>(null)
 
   const mockOutcomesByPlayerId = useMemo(
@@ -66,6 +67,20 @@ export function LeaderboardScreen({ gameWeekLabel, gameWeekId, shortlist, you }:
 
   function toggleRow(id: string) {
     setExpandedId((current) => (current === id ? null : id))
+  }
+
+  if (!hasFinished) {
+    return (
+      <div className="mx-auto flex max-w-2xl flex-col gap-6 px-4 py-8">
+        <ScreenHeader eyebrow={gameWeekLabel} title="Leaderboard" subtitle="Standings aren't in yet." />
+
+        <div className="rounded-xl border border-slate-800 bg-slate-900/60 p-6 text-center">
+          <p className="text-sm text-slate-300">
+            The leaderboard will appear here once {gameWeekLabel} has finished.
+          </p>
+        </div>
+      </div>
+    )
   }
 
   return (

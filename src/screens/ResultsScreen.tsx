@@ -1,25 +1,74 @@
-import type { ResolvedOutcome, ScoreResult, ShortlistEntry } from '../data/types'
+import type { HistoryEntry, ShortlistEntry } from '../data/types'
 import { RiskBadge } from '../components/RiskBadge'
 import { ScreenHeader } from '../components/ScreenHeader'
 
 interface ResultsScreenProps {
   gameWeekLabel: string
   shortlist: ShortlistEntry[]
-  outcomesByPlayerId: Map<string, ResolvedOutcome>
-  predictionsByPlayerId: Map<string, boolean>
-  score: ScoreResult
-  onPlayAgain: () => void
+  current: HistoryEntry | null
+  pastEntries: HistoryEntry[]
+  onGoToPicks: () => void
 }
 
-export function ResultsScreen({
-  gameWeekLabel,
-  shortlist,
-  outcomesByPlayerId,
-  predictionsByPlayerId,
-  score,
-  onPlayAgain,
-}: ResultsScreenProps) {
+function PastResultsList({ pastEntries }: { pastEntries: HistoryEntry[] }) {
+  if (pastEntries.length === 0) return null
+
+  return (
+    <div className="flex flex-col gap-2">
+      <p className="text-sm font-semibold text-amber-400">Past results</p>
+      <ul className="flex flex-col gap-2">
+        {pastEntries.map((entry) => {
+          const entryIsJackpot = entry.score.correctPredictions === entry.score.totalPredictions
+
+          return (
+            <li
+              key={entry.id}
+              className="flex items-center justify-between rounded-lg border border-slate-800 bg-slate-900/40 px-4 py-3"
+            >
+              <div>
+                <p className="text-sm text-slate-300">{new Date(entry.playedAt).toLocaleString()}</p>
+                {entryIsJackpot && <p className="text-xs font-semibold text-amber-400">Jackpot!</p>}
+              </div>
+              <p className="text-lg font-bold text-white">
+                {entry.score.correctPredictions}/{entry.score.totalPredictions}
+              </p>
+            </li>
+          )
+        })}
+      </ul>
+    </div>
+  )
+}
+
+export function ResultsScreen({ gameWeekLabel, shortlist, current, pastEntries, onGoToPicks }: ResultsScreenProps) {
+  if (current === null) {
+    return (
+      <div className="mx-auto flex max-w-2xl flex-col gap-6 px-4 py-8">
+        <ScreenHeader eyebrow={gameWeekLabel} title="Results" subtitle="No results yet." />
+
+        <div className="rounded-xl border border-slate-800 bg-slate-900/60 p-6 text-center">
+          <p className="text-sm text-slate-300">
+            Make your predictions — your results will appear here once the game week has finished.
+          </p>
+        </div>
+
+        <button
+          type="button"
+          onClick={onGoToPicks}
+          className="rounded-xl bg-amber-500 py-3 font-semibold text-slate-900 shadow-lg shadow-amber-500/20 transition hover:bg-amber-400"
+        >
+          Make Your Picks
+        </button>
+
+        <PastResultsList pastEntries={pastEntries} />
+      </div>
+    )
+  }
+
+  const { score } = current
   const isJackpot = score.correctPredictions === score.totalPredictions
+  const outcomesByPlayerId = new Map(current.outcomes.map((o) => [o.playerId, o]))
+  const predictionsByPlayerId = new Map(current.predictions.map((p) => [p.playerId, p.willBeBooked]))
 
   return (
     <div className="mx-auto flex max-w-2xl flex-col gap-6 px-4 py-8">
@@ -87,11 +136,13 @@ export function ResultsScreen({
 
       <button
         type="button"
-        onClick={onPlayAgain}
+        onClick={onGoToPicks}
         className="rounded-xl bg-amber-500 py-3 font-semibold text-slate-900 shadow-lg shadow-amber-500/20 transition hover:bg-amber-400"
       >
         Play Again
       </button>
+
+      <PastResultsList pastEntries={pastEntries} />
     </div>
   )
 }

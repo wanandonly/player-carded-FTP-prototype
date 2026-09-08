@@ -6,7 +6,10 @@
       "Bash(nohup npx vite --port 5173)",
       "Bash(disown)",
       "Bash(curl -sf http://localhost:5173)",
-      "Bash(break)"
+      "Bash(break)",
+      "Bash(node -e ' *)",
+      "Bash(node drive8.mjs)",
+      "Bash(node leaderboard_gate.mjs)"
     ]
   }
 }

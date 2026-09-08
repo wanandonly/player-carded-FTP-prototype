@@ -3,7 +3,7 @@ interface RiskBadgeProps {
   size?: 'sm' | 'lg'
 }
 
-function riskTone(riskPercent: number) {
+export function riskTone(riskPercent: number) {
   if (riskPercent >= 70) return { bg: 'bg-red-500/15', text: 'text-red-400', ring: 'ring-red-500/30' }
   if (riskPercent >= 40) return { bg: 'bg-orange-500/15', text: 'text-orange-400', ring: 'ring-orange-500/30' }
   return { bg: 'bg-emerald-500/15', text: 'text-emerald-400', ring: 'ring-emerald-500/30' }
