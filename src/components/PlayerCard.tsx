@@ -1,3 +1,4 @@
+import { useState } from "react";
 import type { ShortlistEntry } from "../data/types";
 import { FormChips } from "./FormChips";
 import { RiskBadge } from "./RiskBadge";
@@ -15,6 +16,7 @@ export function PlayerCard({
   onSetPrediction,
 }: PlayerCardProps) {
   const { player, team, opponent, referee, stats, risk } = entry;
+  const [showRefStats, setShowRefStats] = useState(false);
 
   return (
     <div className="flex w-full flex-col gap-3 rounded-xl border border-slate-800 bg-slate-900/60 p-4 text-left">
@@ -47,7 +49,28 @@ export function PlayerCard({
       <div className="flex items-center justify-between border-t border-slate-800 pt-3 text-xs text-slate-400">
         <div>
           <p>
-            Ref: <span className="text-slate-200">{referee.name}</span>{" "}
+            Ref:{" "}
+            <button
+              type="button"
+              onClick={() => setShowRefStats((v) => !v)}
+              aria-expanded={showRefStats}
+              className="cursor-pointer border-0 bg-transparent p-0 align-baseline text-slate-200 hover:text-slate-100"
+            >
+              {referee.name}
+              <svg
+                viewBox="0 0 24 24"
+                fill="none"
+                stroke="currentColor"
+                strokeWidth={3}
+                strokeLinecap="round"
+                strokeLinejoin="round"
+                className={`ml-1 inline-block h-3 w-3 align-middle transition-transform ${
+                  showRefStats ? "rotate-180" : ""
+                }`}
+              >
+                <path d="M6 9l6 6 6-6" />
+              </svg>
+            </button>{" "}
             <span className="text-slate-500">
               ({referee.avgCardsPerGame.toFixed(1)} cards/game avg)
             </span>
@@ -55,6 +78,29 @@ export function PlayerCard({
         </div>
         <FormChips form={stats.last5Form} />
       </div>
+
+      {showRefStats && (
+        <div className="grid grid-cols-3 gap-x-4 gap-y-1 rounded-lg bg-slate-800/60 p-3">
+          <div className="flex flex-col text-xs text-slate-400">
+            <span>Games</span>
+            <span className="font-medium text-slate-200">
+              {referee.gamesOfficiatedSeason}
+            </span>
+          </div>
+          <div className="flex flex-col text-xs text-slate-400">
+            <span>Yellow cards</span>
+            <span className="font-medium text-slate-200">
+              {referee.yellowCardsIssuedSeason}
+            </span>
+          </div>
+          <div className="flex flex-col text-xs text-slate-400">
+            <span>Red cards</span>
+            <span className="font-medium text-slate-200">
+              {referee.redCardsIssuedSeason}
+            </span>
+          </div>
+        </div>
+      )}
 
       <div className="flex gap-2 pt-1">
         <button
