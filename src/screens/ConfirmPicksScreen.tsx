@@ -22,10 +22,6 @@ export function ConfirmPicksScreen({
     (entry) => !(entry.player.id in predictions),
   ).length;
   const canLockIn = unansweredCount === 0 && tiebreakerGuessMinute !== null;
-  const averageRisk = Math.round(
-    shortlist.reduce((sum, entry) => sum + entry.risk.riskPercent, 0) /
-      shortlist.length,
-  );
 
   return (
     <div className="mx-auto flex max-w-2xl flex-col gap-6 px-4 py-8">
@@ -34,13 +30,6 @@ export function ConfirmPicksScreen({
         title="Confirm your predictions"
         subtitle="Last chance to change your mind."
       />
-
-      <div className="rounded-xl border border-slate-800 bg-slate-900/60 p-4">
-        <p className="text-sm text-slate-400">
-          This game week's shortlist averages{" "}
-          <span className="font-semibold text-white">{averageRisk}%</span> risk
-        </p>
-      </div>
 
       {unansweredCount > 0 && (
         <div className="rounded-xl border border-amber-500/30 bg-amber-500/10 p-4">

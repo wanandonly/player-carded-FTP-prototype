@@ -29,7 +29,7 @@ function SeasonSummary({ entries }: { entries: HistoryEntry[] }) {
         <p className="text-lg font-bold text-white">{entries.length}</p>
       </div>
       <div className="rounded-xl border border-slate-800 bg-slate-900/60 p-3 text-center">
-        <p className="text-xs text-slate-400">Current streak</p>
+        <p className="text-xs text-slate-400">Current win streak</p>
         <p className="text-lg font-bold text-white">{currentStreak}</p>
       </div>
     </div>
@@ -152,11 +152,6 @@ export function ResultsScreen({
             Perfect week — you've won the jackpot prize!
           </p>
         )}
-      </div>
-
-      <div className="rounded-xl border border-slate-800 bg-slate-900/60 p-3 text-center">
-        <p className="text-xs text-slate-400">Insight points</p>
-        <p className="text-lg font-bold text-white">{score.insightPoints}</p>
       </div>
 
       <div className="rounded-xl border border-slate-800 bg-slate-900/60 p-4 text-center">
