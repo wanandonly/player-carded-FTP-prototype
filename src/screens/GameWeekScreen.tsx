@@ -3,6 +3,7 @@ import type { ShortlistEntry } from "../data/types";
 import { PlayerCard } from "../components/PlayerCard";
 import { RiskKey } from "../components/RiskKey";
 import { ScreenHeader } from "../components/ScreenHeader";
+import { SuggestedAccumulator } from "../components/SuggestedAccumulator";
 
 interface GameWeekScreenProps {
   gameWeekLabel: string;
@@ -87,6 +88,8 @@ export function GameWeekScreen({
           className="mt-3 w-full rounded-lg border border-slate-700 bg-slate-950 px-3 py-2 text-sm text-white outline-none focus:border-amber-400"
         />
       </div>
+
+      <SuggestedAccumulator shortlist={shortlist} />
 
       <div className="sticky bottom-4">
         <button

@@ -18,6 +18,9 @@ export function PlayerCard({
   const { player, team, opponent, referee, stats, risk } = entry;
   const [showRefStats, setShowRefStats] = useState(false);
 
+  const decimalOdds = (100 / risk.riskPercent).toFixed(2);
+  const betslipUrl = "https://www.bet365.com/";
+
   return (
     <div className="flex w-full flex-col gap-3 rounded-xl border border-slate-800 bg-slate-900/60 p-4 text-left">
       <div className="flex items-start justify-between gap-3">
@@ -127,6 +130,27 @@ export function PlayerCard({
         >
           Won't be booked
         </button>
+      </div>
+
+      <div className="flex items-center justify-between gap-3 rounded-lg border border-indigo-500/30 bg-indigo-500/10 px-3 py-2">
+        <div className="min-w-0">
+          <p className="text-xs font-semibold text-indigo-300">Suggested bet</p>
+          <p className="truncate text-sm text-white">
+            {player.name} to be booked
+          </p>
+          <p className="text-xs text-slate-400">
+            Odds {decimalOdds} · This would be the best available odds for the
+            player and could be themed to that bookmaker
+          </p>
+        </div>
+        <a
+          href={betslipUrl}
+          target="_blank"
+          rel="noopener noreferrer"
+          className="shrink-0 rounded-lg bg-indigo-500 px-3 py-2 text-xs font-semibold text-white transition hover:bg-indigo-400"
+        >
+          Add to betslip
+        </a>
       </div>
     </div>
   );

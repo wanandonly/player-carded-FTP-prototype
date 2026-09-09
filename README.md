@@ -22,4 +22,4 @@ Then open the printed local URL and click through: predict Will be booked / Won'
 
 ## Deferred / future work
 
-- Opportunities to integrate betting into the app, could get the live odds for each player to be carded on each pick's card container or we do some suggested bets somewhere would need to think.
+- We could potentially switch the game up by adding questions about if a player will be sent off, will that player be the first player booked, how many fouls a player makes, how many times that player gets fouled or how many player foul involvements (combination of both). A mix of these question would add more variety and interest and would definitely need a change of game name.
