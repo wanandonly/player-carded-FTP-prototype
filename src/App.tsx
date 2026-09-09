@@ -19,6 +19,7 @@ function App() {
   const shortlist = useMemo(() => buildShortlist(gameWeek), [])
   const [screen, setScreen] = useState<Screen>('shortlist')
   const [predictions, setPredictions] = useState<Record<string, boolean>>({})
+  const [tiebreakerGuessMinute, setTiebreakerGuessMinute] = useState<number | null>(null)
   const [playedHistory, setPlayedHistory] = useState<HistoryEntry[]>([])
   const [activeTab, setActiveTab] = useState<Tab>('picks')
 
@@ -47,6 +48,7 @@ function App() {
         playerId: entry.player.id,
         willBeBooked: predictions[entry.player.id] ?? false,
       })),
+      tiebreakerGuessMinute: tiebreakerGuessMinute ?? 0,
     }
     const score = computeScoreResult(pick, outcomes)
     const entry: HistoryEntry = {
@@ -59,6 +61,7 @@ function App() {
     }
     setPlayedHistory((current) => [entry, ...current])
     setPredictions({})
+    setTiebreakerGuessMinute(null)
     setScreen('shortlist')
     setActiveTab('results')
   }
@@ -84,6 +87,7 @@ function App() {
                   predictions: current.predictions,
                   outcomesByPlayerId: new Map(current.outcomes.map((o) => [o.playerId, o])),
                   score: current.score,
+                  submittedAt: current.playedAt,
                 }
               : null
           }
@@ -108,6 +112,8 @@ function App() {
               shortlist={shortlist}
               predictions={predictions}
               onSetPrediction={handleSetPrediction}
+              tiebreakerGuessMinute={tiebreakerGuessMinute}
+              onSetTiebreakerGuessMinute={setTiebreakerGuessMinute}
               onConfirm={() => setScreen('confirm')}
             />
           )}
@@ -117,6 +123,7 @@ function App() {
               gameWeekLabel={gameWeek.label}
               shortlist={shortlist}
               predictions={predictions}
+              tiebreakerGuessMinute={tiebreakerGuessMinute}
               onBack={() => setScreen('shortlist')}
               onLockIn={handleLockIn}
             />

@@ -8,12 +8,17 @@ function daysAgo(days: number): string {
   return date.toISOString()
 }
 
-function buildMockEntry(id: string, playedAt: string, willBeBookedByPlayerId: Record<string, boolean>): HistoryEntry {
+function buildMockEntry(
+  id: string,
+  playedAt: string,
+  willBeBookedByPlayerId: Record<string, boolean>,
+  tiebreakerGuessMinute: number,
+): HistoryEntry {
   const predictions = leaderboardOutcomes.map((outcome) => ({
     playerId: outcome.playerId,
     willBeBooked: willBeBookedByPlayerId[outcome.playerId],
   }))
-  const score = computeScoreResult({ gameWeekId: 'gw-4', predictions }, leaderboardOutcomes)
+  const score = computeScoreResult({ gameWeekId: 'gw-4', predictions, tiebreakerGuessMinute }, leaderboardOutcomes)
   return { id, playedAt, gameWeekId: 'gw-4', predictions, outcomes: leaderboardOutcomes, score }
 }
 
@@ -22,31 +27,46 @@ function buildMockEntry(id: string, playedAt: string, willBeBookedByPlayerId: Re
 // Scored against the same fixed outcome set as the leaderboard rivals via
 // computeScoreResult, so these numbers are always derived, never hand-typed.
 export const mockPastResults: HistoryEntry[] = [
-  buildMockEntry('mock-3', daysAgo(7), {
-    'p-casemiro': true,
-    'p-bissouma': true,
-    'p-konate': false,
-    'p-rice': true,
-    'p-gvardiol': false,
-    'p-colwill': false,
-    'p-vvd': false,
-  }),
-  buildMockEntry('mock-2', daysAgo(14), {
-    'p-casemiro': false,
-    'p-bissouma': true,
-    'p-konate': true,
-    'p-rice': true,
-    'p-gvardiol': true,
-    'p-colwill': true,
-    'p-vvd': false,
-  }),
-  buildMockEntry('mock-1', daysAgo(21), {
-    'p-casemiro': true,
-    'p-bissouma': false,
-    'p-konate': false,
-    'p-rice': true,
-    'p-gvardiol': false,
-    'p-colwill': false,
-    'p-vvd': true,
-  }),
+  buildMockEntry(
+    'mock-3',
+    daysAgo(7),
+    {
+      'p-casemiro': true,
+      'p-bissouma': true,
+      'p-konate': false,
+      'p-rice': true,
+      'p-gvardiol': false,
+      'p-colwill': false,
+      'p-vvd': false,
+    },
+    18,
+  ),
+  buildMockEntry(
+    'mock-2',
+    daysAgo(14),
+    {
+      'p-casemiro': false,
+      'p-bissouma': true,
+      'p-konate': true,
+      'p-rice': true,
+      'p-gvardiol': true,
+      'p-colwill': true,
+      'p-vvd': false,
+    },
+    40,
+  ),
+  buildMockEntry(
+    'mock-1',
+    daysAgo(21),
+    {
+      'p-casemiro': true,
+      'p-bissouma': false,
+      'p-konate': false,
+      'p-rice': true,
+      'p-gvardiol': false,
+      'p-colwill': false,
+      'p-vvd': true,
+    },
+    9,
+  ),
 ]

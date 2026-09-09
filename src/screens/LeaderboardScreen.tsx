@@ -9,6 +9,7 @@ interface LeaderboardYou {
   predictions: PlayerPrediction[]
   outcomesByPlayerId: Map<string, ResolvedOutcome>
   score: ScoreResult
+  submittedAt: string
 }
 
 interface LeaderboardScreenProps {
@@ -26,6 +27,7 @@ interface LeaderboardRow {
   predictionsByPlayerId: Map<string, boolean>
   outcomesByPlayerId: Map<string, ResolvedOutcome>
   score: ScoreResult
+  submittedAt: string
 }
 
 export function LeaderboardScreen({ gameWeekLabel, gameWeekId, shortlist, you, hasFinished }: LeaderboardScreenProps) {
@@ -38,7 +40,10 @@ export function LeaderboardScreen({ gameWeekLabel, gameWeekId, shortlist, you, h
 
   const rows: LeaderboardRow[] = useMemo(() => {
     const rivalRows = leaderboard.map((entry) => {
-      const score = computeScoreResult({ gameWeekId, predictions: entry.predictions }, leaderboardOutcomes)
+      const score = computeScoreResult(
+        { gameWeekId, predictions: entry.predictions, tiebreakerGuessMinute: entry.tiebreakerGuessMinute },
+        leaderboardOutcomes,
+      )
       return {
         id: entry.id,
         name: entry.name,
@@ -46,6 +51,7 @@ export function LeaderboardScreen({ gameWeekLabel, gameWeekId, shortlist, you, h
         predictionsByPlayerId: new Map(entry.predictions.map((p) => [p.playerId, p.willBeBooked])),
         outcomesByPlayerId: mockOutcomesByPlayerId,
         score,
+        submittedAt: entry.submittedAt,
       }
     })
 
@@ -58,11 +64,26 @@ export function LeaderboardScreen({ gameWeekLabel, gameWeekId, shortlist, you, h
             predictionsByPlayerId: new Map(you.predictions.map((p) => [p.playerId, p.willBeBooked])),
             outcomesByPlayerId: you.outcomesByPlayerId,
             score: you.score,
+            submittedAt: you.submittedAt,
           },
         ]
       : []
 
-    return [...rivalRows, ...youRow].sort((a, b) => b.score.correctPredictions - a.score.correctPredictions)
+    return [...rivalRows, ...youRow].sort((a, b) => {
+      if (b.score.correctPredictions !== a.score.correctPredictions) {
+        return b.score.correctPredictions - a.score.correctPredictions
+      }
+
+      const aDiff = a.score.tiebreakerDiff
+      const bDiff = b.score.tiebreakerDiff
+      if (aDiff !== bDiff) {
+        if (aDiff === null) return 1
+        if (bDiff === null) return -1
+        return aDiff - bDiff
+      }
+
+      return new Date(a.submittedAt).getTime() - new Date(b.submittedAt).getTime()
+    })
   }, [gameWeekId, mockOutcomesByPlayerId, you])
 
   function toggleRow(id: string) {
@@ -124,7 +145,17 @@ export function LeaderboardScreen({ gameWeekLabel, gameWeekId, shortlist, you, h
               </button>
 
               {expanded && (
-                <ul className="flex flex-col gap-2 border-t border-slate-800 px-4 py-3">
+                <div className="flex flex-col gap-2 border-t border-slate-800 px-4 py-3">
+                  <p className="text-xs text-slate-400">
+                    Tiebreaker: guessed {row.score.tiebreakerGuessMinute}'
+                    {row.score.tiebreakerActualMinute !== null && (
+                      <>
+                        {' '}
+                        · actual {row.score.tiebreakerActualMinute}' · Δ{row.score.tiebreakerDiff}
+                      </>
+                    )}
+                  </p>
+                  <ul className="flex flex-col gap-2">
                   {shortlist.map((entry) => {
                     const outcome = row.outcomesByPlayerId.get(entry.player.id)
                     const prediction = row.predictionsByPlayerId.get(entry.player.id)
@@ -154,7 +185,8 @@ export function LeaderboardScreen({ gameWeekLabel, gameWeekId, shortlist, you, h
                       </li>
                     )
                   })}
-                </ul>
+                  </ul>
+                </div>
               )}
             </li>
           )

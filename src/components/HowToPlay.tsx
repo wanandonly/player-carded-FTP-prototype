@@ -6,6 +6,7 @@ const RULES = [
   `Once all ${PICKS_PER_GAME_WEEK} are predicted, review and lock in — no changes after that.`,
   `Your score is how many of the ${PICKS_PER_GAME_WEEK} you got right, shown as X / ${PICKS_PER_GAME_WEEK}.`,
   `Get all ${PICKS_PER_GAME_WEEK} predictions right to win the jackpot prize.`,
+  "Tiebreaker: guess the minute of the game week's first yellow card. If more than one player gets a perfect score, the closest guess wins the jackpot — still tied, whoever locked in their picks first wins.",
 ]
 
 export function HowToPlay() {

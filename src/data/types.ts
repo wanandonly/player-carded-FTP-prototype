@@ -78,6 +78,7 @@ export interface PlayerPrediction {
 export interface Pick {
   gameWeekId: string
   predictions: PlayerPrediction[]
+  tiebreakerGuessMinute: number
 }
 
 export interface ResolvedOutcome {
@@ -85,6 +86,7 @@ export interface ResolvedOutcome {
   fixtureId: string
   wasBooked: boolean
   cardType?: 'yellow' | 'red'
+  cardMinute?: number
 }
 
 export interface ScoreResult {
@@ -93,6 +95,9 @@ export interface ScoreResult {
   correctPredictions: number
   correctPlayerIds: string[]
   incorrectPlayerIds: string[]
+  tiebreakerGuessMinute: number
+  tiebreakerActualMinute: number | null
+  tiebreakerDiff: number | null
 }
 
 export interface HistoryEntry {

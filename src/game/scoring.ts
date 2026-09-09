@@ -15,11 +15,21 @@ export function computeScoreResult(pick: Pick, outcomes: ResolvedOutcome[]): Sco
     }
   }
 
+  const yellowCardMinutes = outcomes
+    .filter((outcome) => outcome.cardType === 'yellow' && outcome.cardMinute !== undefined)
+    .map((outcome) => outcome.cardMinute as number)
+  const tiebreakerActualMinute = yellowCardMinutes.length > 0 ? Math.min(...yellowCardMinutes) : null
+  const tiebreakerDiff =
+    tiebreakerActualMinute === null ? null : Math.abs(pick.tiebreakerGuessMinute - tiebreakerActualMinute)
+
   return {
     gameWeekId: pick.gameWeekId,
     totalPredictions: pick.predictions.length,
     correctPredictions: correctPlayerIds.length,
     correctPlayerIds,
     incorrectPlayerIds,
+    tiebreakerGuessMinute: pick.tiebreakerGuessMinute,
+    tiebreakerActualMinute,
+    tiebreakerDiff,
   }
 }

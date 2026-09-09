@@ -96,6 +96,22 @@ export function ResultsScreen({ gameWeekLabel, shortlist, current, pastEntries, 
         )}
       </div>
 
+      <div className="rounded-xl border border-slate-800 bg-slate-900/60 p-4 text-center">
+        <p className="text-sm text-slate-300">
+          Tiebreaker: you guessed{" "}
+          <span className="font-semibold text-white">{score.tiebreakerGuessMinute}'</span>
+          {score.tiebreakerActualMinute !== null ? (
+            <>
+              {" "}
+              — first yellow was{" "}
+              <span className="font-semibold text-white">{score.tiebreakerActualMinute}'</span>
+            </>
+          ) : (
+            " — no yellow card was shown this game week"
+          )}
+        </p>
+      </div>
+
       <ul className="flex flex-col gap-2">
         {shortlist.map((entry) => {
           const outcome = outcomesByPlayerId.get(entry.player.id)

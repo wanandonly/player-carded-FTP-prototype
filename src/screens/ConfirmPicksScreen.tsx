@@ -6,6 +6,7 @@ interface ConfirmPicksScreenProps {
   gameWeekLabel: string;
   shortlist: ShortlistEntry[];
   predictions: Record<string, boolean>;
+  tiebreakerGuessMinute: number | null;
   onBack: () => void;
   onLockIn: () => void;
 }
@@ -14,12 +15,14 @@ export function ConfirmPicksScreen({
   gameWeekLabel,
   shortlist,
   predictions,
+  tiebreakerGuessMinute,
   onBack,
   onLockIn,
 }: ConfirmPicksScreenProps) {
   const unansweredCount = shortlist.filter(
     (entry) => !(entry.player.id in predictions),
   ).length;
+  const canLockIn = unansweredCount === 0 && tiebreakerGuessMinute !== null;
   const averageRisk = Math.round(
     shortlist.reduce((sum, entry) => sum + entry.risk.riskPercent, 0) /
       shortlist.length,
@@ -79,6 +82,15 @@ export function ConfirmPicksScreen({
         })}
       </ul>
 
+      <div className="rounded-xl border border-slate-800 bg-slate-900/60 p-4">
+        <p className="text-sm text-slate-400">
+          Tiebreaker — first yellow card minute:{" "}
+          <span className="font-semibold text-white">
+            {tiebreakerGuessMinute !== null ? `${tiebreakerGuessMinute}'` : "Unanswered"}
+          </span>
+        </p>
+      </div>
+
       <div className="flex gap-3">
         <button
           type="button"
@@ -89,7 +101,7 @@ export function ConfirmPicksScreen({
         </button>
         <button
           type="button"
-          disabled={unansweredCount > 0}
+          disabled={!canLockIn}
           onClick={onLockIn}
           className="cursor-pointer flex-1 rounded-xl bg-amber-500 py-3 font-semibold text-slate-900 shadow-lg shadow-amber-500/20 transition hover:bg-amber-400 disabled:cursor-not-allowed disabled:bg-slate-700 disabled:text-slate-400 disabled:shadow-none"
         >

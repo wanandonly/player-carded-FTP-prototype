@@ -13,12 +13,14 @@ export function resolveGameWeek(shortlist: ShortlistEntry[]): ResolvedOutcome[] 
         ? 'red'
         : 'yellow'
       : undefined
+    const cardMinute = wasBooked ? Math.ceil(Math.random() * 90) : undefined
 
     return {
       playerId: entry.player.id,
       fixtureId: entry.fixture.id,
       wasBooked,
       cardType,
+      cardMinute,
     }
   })
 }
