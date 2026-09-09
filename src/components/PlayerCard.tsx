@@ -2,7 +2,6 @@ import { useState } from "react";
 import type { ShortlistEntry } from "../data/types";
 import { decimalOddsFromRiskPercent, toFractionalOdds } from "../game/odds";
 import { FormChips } from "./FormChips";
-import { RiskBadge } from "./RiskBadge";
 import { StatBar } from "./StatBar";
 
 interface PlayerCardProps {
@@ -25,17 +24,14 @@ export function PlayerCard({
 
   return (
     <div className="flex w-full flex-col gap-3 rounded-xl border border-slate-800 bg-slate-900/60 p-4 text-left">
-      <div className="flex items-start justify-between gap-3">
-        <div>
-          <p className="font-semibold text-white">{player.name}</p>
-          <p className="text-xs text-slate-400">
-            <span className="font-semibold text-slate-300">
-              {team.shortName}
-            </span>{" "}
-            vs {opponent.shortName} · {player.position}
-          </p>
-        </div>
-        <RiskBadge riskPercent={risk.riskPercent} />
+      <div>
+        <p className="font-semibold text-white">{player.name}</p>
+        <p className="text-xs text-slate-400">
+          <span className="font-semibold text-slate-300">
+            {team.shortName}
+          </span>{" "}
+          vs {opponent.shortName} · {player.position}
+        </p>
       </div>
 
       <div className="grid grid-cols-2 gap-x-4 gap-y-2">

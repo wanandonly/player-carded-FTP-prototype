@@ -98,6 +98,8 @@ export interface ScoreResult {
   tiebreakerGuessMinute: number
   tiebreakerActualMinute: number | null
   tiebreakerDiff: number | null
+  /** Sum of (100 - riskPercent) or riskPercent, whichever the correct call went against, per correct pick. */
+  insightPoints: number
 }
 
 export interface HistoryEntry {

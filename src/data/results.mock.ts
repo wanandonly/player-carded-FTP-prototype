@@ -1,6 +1,12 @@
+import { gameWeek } from './gameWeeks.mock'
+import { buildShortlist } from '../game/buildShortlist'
 import { computeScoreResult } from '../game/scoring'
 import type { HistoryEntry } from './types'
 import { leaderboardOutcomes } from './leaderboard.mock'
+
+const riskPercentByPlayerId = new Map(
+  buildShortlist(gameWeek).map((entry) => [entry.player.id, entry.risk.riskPercent]),
+)
 
 function daysAgo(days: number): string {
   const date = new Date()
@@ -18,7 +24,11 @@ function buildMockEntry(
     playerId: outcome.playerId,
     willBeBooked: willBeBookedByPlayerId[outcome.playerId],
   }))
-  const score = computeScoreResult({ gameWeekId: 'gw-4', predictions, tiebreakerGuessMinute }, leaderboardOutcomes)
+  const score = computeScoreResult(
+    { gameWeekId: 'gw-4', predictions, tiebreakerGuessMinute },
+    leaderboardOutcomes,
+    riskPercentByPlayerId,
+  )
   return { id, playedAt, gameWeekId: 'gw-4', predictions, outcomes: leaderboardOutcomes, score }
 }
 

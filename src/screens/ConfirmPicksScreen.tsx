@@ -1,5 +1,4 @@
 import type { ShortlistEntry } from "../data/types";
-import { RiskBadge } from "../components/RiskBadge";
 import { ScreenHeader } from "../components/ScreenHeader";
 
 interface ConfirmPicksScreenProps {
@@ -67,16 +66,13 @@ export function ConfirmPicksScreen({
                   {entry.team.shortName} vs {entry.opponent.shortName}
                 </p>
               </div>
-              <div className="flex shrink-0 items-center gap-3">
-                <span className="shrink-0 whitespace-nowrap rounded-full bg-amber-500/10 px-3 py-1 text-xs font-semibold text-amber-300">
-                  {prediction === true
-                    ? "Will be booked"
-                    : prediction === false
-                      ? "Won't be booked"
-                      : "Unanswered"}
-                </span>
-                <RiskBadge riskPercent={entry.risk.riskPercent} />
-              </div>
+              <span className="shrink-0 whitespace-nowrap rounded-full bg-amber-500/10 px-3 py-1 text-xs font-semibold text-amber-300">
+                {prediction === true
+                  ? "Will be booked"
+                  : prediction === false
+                    ? "Won't be booked"
+                    : "Unanswered"}
+              </span>
             </li>
           );
         })}

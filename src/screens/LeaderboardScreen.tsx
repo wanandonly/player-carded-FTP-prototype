@@ -7,7 +7,6 @@ import type {
   ScoreResult,
   ShortlistEntry,
 } from "../data/types";
-import { RiskBadge } from "../components/RiskBadge";
 import { ScreenHeader } from "../components/ScreenHeader";
 
 interface LeaderboardYou {
@@ -52,6 +51,11 @@ export function LeaderboardScreen({
     [],
   );
 
+  const riskPercentByPlayerId = useMemo(
+    () => new Map(shortlist.map((entry) => [entry.player.id, entry.risk.riskPercent])),
+    [shortlist],
+  );
+
   const rows: LeaderboardRow[] = useMemo(() => {
     const rivalRows = leaderboard.map((entry) => {
       const score = computeScoreResult(
@@ -61,6 +65,7 @@ export function LeaderboardScreen({
           tiebreakerGuessMinute: entry.tiebreakerGuessMinute,
         },
         leaderboardOutcomes,
+        riskPercentByPlayerId,
       );
       return {
         id: entry.id,
@@ -96,6 +101,10 @@ export function LeaderboardScreen({
         return b.score.correctPredictions - a.score.correctPredictions;
       }
 
+      if (b.score.insightPoints !== a.score.insightPoints) {
+        return b.score.insightPoints - a.score.insightPoints;
+      }
+
       const aDiff = a.score.tiebreakerDiff;
       const bDiff = b.score.tiebreakerDiff;
       if (aDiff !== bDiff) {
@@ -108,7 +117,7 @@ export function LeaderboardScreen({
         new Date(a.submittedAt).getTime() - new Date(b.submittedAt).getTime()
       );
     });
-  }, [gameWeekId, mockOutcomesByPlayerId, you]);
+  }, [gameWeekId, mockOutcomesByPlayerId, riskPercentByPlayerId, you]);
 
   function toggleRow(id: string) {
     setExpandedId((current) => (current === id ? null : id));
@@ -194,6 +203,9 @@ export function LeaderboardScreen({
                       </>
                     )}
                   </p>
+                  <p className="text-xs text-slate-400">
+                    Insight points: {row.score.insightPoints}
+                  </p>
                   <ul className="flex flex-col gap-2">
                     {shortlist.map((entry) => {
                       const outcome = row.outcomesByPlayerId.get(
@@ -235,7 +247,6 @@ export function LeaderboardScreen({
                                 : "Won't be booked"}
                             </span>
                           </div>
-                          <RiskBadge riskPercent={entry.risk.riskPercent} />
                         </li>
                       );
                     })}

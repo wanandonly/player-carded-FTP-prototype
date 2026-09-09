@@ -18,6 +18,10 @@ type Tab = 'picks' | 'leaderboard' | 'results'
 
 function App() {
   const shortlist = useMemo(() => buildShortlist(gameWeek), [])
+  const riskPercentByPlayerId = useMemo(
+    () => new Map(shortlist.map((entry) => [entry.player.id, entry.risk.riskPercent])),
+    [shortlist],
+  )
   const [screen, setScreen] = useState<Screen>('shortlist')
   const [predictions, setPredictions] = useState<Record<string, boolean>>({})
   const [tiebreakerGuessMinute, setTiebreakerGuessMinute] = useState<number | null>(null)
@@ -51,7 +55,7 @@ function App() {
       })),
       tiebreakerGuessMinute: tiebreakerGuessMinute ?? 0,
     }
-    const score = computeScoreResult(pick, outcomes)
+    const score = computeScoreResult(pick, outcomes, riskPercentByPlayerId)
     const entry: HistoryEntry = {
       id: crypto.randomUUID(),
       playedAt: new Date().toISOString(),

@@ -1,5 +1,4 @@
 import type { HistoryEntry, ShortlistEntry } from "../data/types";
-import { RiskBadge } from "../components/RiskBadge";
 import { ScreenHeader } from "../components/ScreenHeader";
 
 interface ResultsScreenProps {
@@ -8,6 +7,33 @@ interface ResultsScreenProps {
   current: HistoryEntry | null;
   pastEntries: HistoryEntry[];
   onGoToPicks: () => void;
+}
+
+function isWinningWeek(score: HistoryEntry["score"]): boolean {
+  return score.correctPredictions >= Math.ceil(score.totalPredictions / 2);
+}
+
+function SeasonSummary({ entries }: { entries: HistoryEntry[] }) {
+  if (entries.length === 0) return null;
+
+  let currentStreak = 0;
+  for (const entry of entries) {
+    if (!isWinningWeek(entry.score)) break;
+    currentStreak++;
+  }
+
+  return (
+    <div className="grid grid-cols-2 gap-3">
+      <div className="rounded-xl border border-slate-800 bg-slate-900/60 p-3 text-center">
+        <p className="text-xs text-slate-400">Weeks played</p>
+        <p className="text-lg font-bold text-white">{entries.length}</p>
+      </div>
+      <div className="rounded-xl border border-slate-800 bg-slate-900/60 p-3 text-center">
+        <p className="text-xs text-slate-400">Current streak</p>
+        <p className="text-lg font-bold text-white">{currentStreak}</p>
+      </div>
+    </div>
+  );
 }
 
 function PastResultsList({ pastEntries }: { pastEntries: HistoryEntry[] }) {
@@ -63,6 +89,8 @@ export function ResultsScreen({
           subtitle="No results yet."
         />
 
+        <SeasonSummary entries={pastEntries} />
+
         <div className="rounded-xl border border-slate-800 bg-slate-900/60 p-6 text-center">
           <p className="text-sm text-slate-300">
             Make your predictions — your results will appear here once the game
@@ -100,6 +128,8 @@ export function ResultsScreen({
         subtitle="Here's how your predictions landed."
       />
 
+      <SeasonSummary entries={[current, ...pastEntries]} />
+
       <div
         className={`rounded-xl border p-6 text-center ${
           isJackpot
@@ -122,6 +152,11 @@ export function ResultsScreen({
             Perfect week — you've won the jackpot prize!
           </p>
         )}
+      </div>
+
+      <div className="rounded-xl border border-slate-800 bg-slate-900/60 p-3 text-center">
+        <p className="text-xs text-slate-400">Insight points</p>
+        <p className="text-lg font-bold text-white">{score.insightPoints}</p>
       </div>
 
       <div className="rounded-xl border border-slate-800 bg-slate-900/60 p-4 text-center">
@@ -184,7 +219,6 @@ export function ResultsScreen({
                   </p>
                 </div>
               </div>
-              <RiskBadge riskPercent={entry.risk.riskPercent} />
             </li>
           );
         })}
