@@ -22,5 +22,4 @@ Then open the printed local URL and click through: predict Will be booked / Won'
 
 ## Deferred / future work
 
-- "Who gets booked first" alternate game mode — noted as a future direction, not designed yet
 - Opportunities to integrate betting into the app, could get the live odds for each player to be carded on each pick's card container or we do some suggested bets somewhere would need to think.
