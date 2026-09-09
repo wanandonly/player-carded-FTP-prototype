@@ -19,7 +19,6 @@ export function PlayerCard({
   const [showRefStats, setShowRefStats] = useState(false);
 
   const decimalOdds = (100 / risk.riskPercent).toFixed(2);
-  const betslipUrl = "https://www.bet365.com/";
 
   return (
     <div className="flex w-full flex-col gap-3 rounded-xl border border-slate-800 bg-slate-900/60 p-4 text-left">
@@ -67,7 +66,7 @@ export function PlayerCard({
                 strokeWidth={3}
                 strokeLinecap="round"
                 strokeLinejoin="round"
-                className={`ml-1 inline-block h-3 w-3 align-middle transition-transform ${
+                className={`ml-0.5 inline-block h-2.5 w-2.5 align-middle transition-transform ${
                   showRefStats ? "rotate-180" : ""
                 }`}
               >
@@ -75,7 +74,7 @@ export function PlayerCard({
               </svg>
             </button>{" "}
             <span className="text-slate-500">
-              ({referee.avgCardsPerGame.toFixed(1)} cards/game avg)
+              ({referee.avgCardsPerGame.toFixed(1)} cards/game)
             </span>
           </p>
         </div>
@@ -143,14 +142,9 @@ export function PlayerCard({
             player and could be themed to that bookmaker
           </p>
         </div>
-        <a
-          href={betslipUrl}
-          target="_blank"
-          rel="noopener noreferrer"
-          className="shrink-0 rounded-lg bg-indigo-500 px-3 py-2 text-xs font-semibold text-white transition hover:bg-indigo-400"
-        >
+        <span className="shrink-0 rounded-lg bg-indigo-500 px-3 py-2 text-xs font-semibold text-white">
           Add to betslip
-        </a>
+        </span>
       </div>
     </div>
   );

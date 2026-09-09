@@ -22,8 +22,6 @@ export function SuggestedAccumulator({ shortlist }: SuggestedAccumulatorProps) {
     1,
   );
 
-  const betslipUrl = "https://www.bet365.com/";
-
   return (
     <div className="rounded-xl border border-indigo-500/30 bg-indigo-500/10 p-4">
       <p className="text-xs font-semibold text-indigo-300">
@@ -57,14 +55,9 @@ export function SuggestedAccumulator({ shortlist }: SuggestedAccumulatorProps) {
             {combinedOdds.toFixed(2)}
           </p>
         </div>
-        <a
-          href={betslipUrl}
-          target="_blank"
-          rel="noopener noreferrer"
-          className="shrink-0 rounded-lg bg-indigo-500 px-4 py-2 text-sm font-semibold text-white transition hover:bg-indigo-400"
-        >
+        <span className="shrink-0 rounded-lg bg-indigo-500 px-4 py-2 text-sm font-semibold text-white">
           Add to betslip
-        </a>
+        </span>
       </div>
     </div>
   );
