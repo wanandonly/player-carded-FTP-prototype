@@ -1,5 +1,6 @@
 import { useState } from "react";
 import type { ShortlistEntry } from "../data/types";
+import { decimalOddsFromRiskPercent, toFractionalOdds } from "../game/odds";
 import { FormChips } from "./FormChips";
 import { RiskBadge } from "./RiskBadge";
 import { StatBar } from "./StatBar";
@@ -18,7 +19,7 @@ export function PlayerCard({
   const { player, team, opponent, referee, stats, risk } = entry;
   const [showRefStats, setShowRefStats] = useState(false);
 
-  const decimalOdds = (100 / risk.riskPercent).toFixed(2);
+  const fractionalOdds = toFractionalOdds(decimalOddsFromRiskPercent(risk.riskPercent));
 
   return (
     <div className="flex w-full flex-col gap-3 rounded-xl border border-slate-800 bg-slate-900/60 p-4 text-left">
@@ -138,8 +139,8 @@ export function PlayerCard({
             {player.name} to be booked
           </p>
           <p className="text-xs text-slate-400">
-            Odds {decimalOdds} · This would be the best available odds for the
-            player and could be themed to that bookmaker
+            Odds {fractionalOdds} · This would be the best available odds for
+            the player and could be themed to that bookmaker
           </p>
         </div>
         <span className="shrink-0 rounded-lg bg-indigo-500 px-3 py-2 text-xs font-semibold text-white">

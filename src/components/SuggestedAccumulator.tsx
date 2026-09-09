@@ -1,10 +1,7 @@
 import type { ShortlistEntry } from "../data/types";
+import { decimalOddsFromRiskPercent, toFractionalOdds } from "../game/odds";
 
 const ACCUMULATOR_LEG_COUNT = 3;
-
-function decimalOddsFor(riskPercent: number): number {
-  return 100 / riskPercent;
-}
 
 interface SuggestedAccumulatorProps {
   shortlist: ShortlistEntry[];
@@ -18,7 +15,7 @@ export function SuggestedAccumulator({ shortlist }: SuggestedAccumulatorProps) {
   if (legs.length < 2) return null;
 
   const combinedOdds = legs.reduce(
-    (acc, entry) => acc * decimalOddsFor(entry.risk.riskPercent),
+    (acc, entry) => acc * decimalOddsFromRiskPercent(entry.risk.riskPercent),
     1,
   );
 
@@ -39,7 +36,7 @@ export function SuggestedAccumulator({ shortlist }: SuggestedAccumulatorProps) {
           >
             <span className="truncate">{entry.player.name} to be booked</span>
             <span className="shrink-0 text-slate-400">
-              {decimalOddsFor(entry.risk.riskPercent).toFixed(2)}
+              {toFractionalOdds(decimalOddsFromRiskPercent(entry.risk.riskPercent))}
             </span>
           </li>
         ))}
@@ -52,7 +49,7 @@ export function SuggestedAccumulator({ shortlist }: SuggestedAccumulatorProps) {
             and could be themed to that bookmaker
           </p>
           <p className="text-lg font-bold text-white">
-            {combinedOdds.toFixed(2)}
+            {toFractionalOdds(combinedOdds)}
           </p>
         </div>
         <span className="shrink-0 rounded-lg bg-indigo-500 px-4 py-2 text-sm font-semibold text-white">
