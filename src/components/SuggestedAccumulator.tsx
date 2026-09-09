@@ -42,19 +42,19 @@ export function SuggestedAccumulator({ shortlist }: SuggestedAccumulatorProps) {
         ))}
       </ul>
 
-      <div className="mt-3 flex items-center justify-between gap-3 border-t border-indigo-500/20 pt-3">
-        <div>
-          <p className="text-xs text-slate-400">
-            Combined odds · This would be the best available odds for the player
-            and could be themed to that bookmaker
-          </p>
+      <div className="mt-3 flex flex-col gap-2 border-t border-indigo-500/20 pt-3">
+        <p className="text-xs text-slate-400">
+          Combined odds · This would be the best available odds for the player
+          and could be themed to that bookmaker
+        </p>
+        <div className="flex items-center justify-between gap-3">
           <p className="text-lg font-bold text-white">
             {toFractionalOdds(combinedOdds)}
           </p>
+          <span className="shrink-0 rounded-lg bg-indigo-500 px-4 py-2 text-sm font-semibold text-white">
+            Add to betslip
+          </span>
         </div>
-        <span className="shrink-0 rounded-lg bg-indigo-500 px-4 py-2 text-sm font-semibold text-white">
-          Add to betslip
-        </span>
       </div>
     </div>
   );
