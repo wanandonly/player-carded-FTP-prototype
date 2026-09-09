@@ -19,7 +19,9 @@ export function PlayerCard({
   const { player, team, opponent, referee, stats, risk } = entry;
   const [showRefStats, setShowRefStats] = useState(false);
 
-  const fractionalOdds = toFractionalOdds(decimalOddsFromRiskPercent(risk.riskPercent));
+  const fractionalOdds = toFractionalOdds(
+    decimalOddsFromRiskPercent(risk.riskPercent),
+  );
 
   return (
     <div className="flex w-full flex-col gap-3 rounded-xl border border-slate-800 bg-slate-900/60 p-4 text-left">
@@ -132,18 +134,15 @@ export function PlayerCard({
         </button>
       </div>
 
-      <div className="flex items-center justify-between gap-3 rounded-lg border border-indigo-500/30 bg-indigo-500/10 px-3 py-2">
-        <div className="min-w-0">
-          <p className="text-xs font-semibold text-indigo-300">Suggested bet</p>
-          <p className="truncate text-sm text-white">
-            {player.name} to be booked
-          </p>
+      <div className="flex flex-col gap-2 rounded-lg border border-indigo-500/30 bg-indigo-500/10 px-3 py-2">
+        <div>
+          <p className="text-sm text-white mb-2">{player.name} to be booked</p>
           <p className="text-xs text-slate-400">
             Odds {fractionalOdds} · This would be the best available odds for
             the player and could be themed to that bookmaker
           </p>
         </div>
-        <span className="shrink-0 rounded-lg bg-indigo-500 px-3 py-2 text-xs font-semibold text-white">
+        <span className="self-end rounded-lg bg-indigo-500 px-3 py-2 text-xs font-semibold text-white">
           Add to betslip
         </span>
       </div>

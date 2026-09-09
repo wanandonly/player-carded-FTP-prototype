@@ -19,17 +19,20 @@ export function RiskKey() {
           const tone = riskTone(tier.sample);
           return (
             <li key={tier.label} className="flex items-center gap-3">
-              <span
-                className={`h-3 w-3 shrink-0 rounded-full ${tone.text.replace("text-", "bg-")}`}
-              />
+              <span className={`h-3 w-3 shrink-0 rounded-full ${tone.dot}`} />
               <p className="text-sm text-slate-200">
                 {tier.label}{" "}
-                <span className="text-xs text-slate-400">({tier.range})</span>
+                <span className={`text-xs ${tone.text}`}>({tier.range})</span>
               </p>
             </li>
           );
         })}
       </ul>
+
+      <div className="flex min-h-24 flex-1 flex-col items-center justify-center gap-1 rounded-lg border border-dashed border-slate-700 p-4 text-center">
+        <p className="text-xs font-semibold text-slate-500">Sponsor ad placeholder</p>
+        <p className="text-xs text-slate-600">Space reserved for a future sponsor</p>
+      </div>
     </div>
   );
 }
