@@ -203,9 +203,6 @@ export function LeaderboardScreen({
                       </>
                     )}
                   </p>
-                  <p className="text-xs text-slate-400">
-                    Insight points: {row.score.insightPoints}
-                  </p>
                   <ul className="flex flex-col gap-2">
                     {shortlist.map((entry) => {
                       const outcome = row.outcomesByPlayerId.get(
