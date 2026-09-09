@@ -9,29 +9,13 @@ interface ResultsScreenProps {
   onGoToPicks: () => void;
 }
 
-function isWinningWeek(score: HistoryEntry["score"]): boolean {
-  return score.correctPredictions >= Math.ceil(score.totalPredictions / 2);
-}
-
 function SeasonSummary({ entries }: { entries: HistoryEntry[] }) {
   if (entries.length === 0) return null;
 
-  let currentStreak = 0;
-  for (const entry of entries) {
-    if (!isWinningWeek(entry.score)) break;
-    currentStreak++;
-  }
-
   return (
-    <div className="grid grid-cols-2 gap-3">
-      <div className="rounded-xl border border-slate-800 bg-slate-900/60 p-3 text-center">
-        <p className="text-xs text-slate-400">Weeks played</p>
-        <p className="text-lg font-bold text-white">{entries.length}</p>
-      </div>
-      <div className="rounded-xl border border-slate-800 bg-slate-900/60 p-3 text-center">
-        <p className="text-xs text-slate-400">Current win streak</p>
-        <p className="text-lg font-bold text-white">{currentStreak}</p>
-      </div>
+    <div className="rounded-xl border border-slate-800 bg-slate-900/60 p-3 text-center">
+      <p className="text-xs text-slate-400">Weeks played</p>
+      <p className="text-lg font-bold text-white">{entries.length}</p>
     </div>
   );
 }
