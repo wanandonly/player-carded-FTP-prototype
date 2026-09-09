@@ -8,6 +8,7 @@ import { resolveGameWeek } from './game/resolveGameWeek'
 import { computeScoreResult } from './game/scoring'
 import { AppHeader } from './components/AppHeader'
 import { HowToPlay } from './components/HowToPlay'
+import { ResponsibleGamblingFooter } from './components/ResponsibleGamblingFooter'
 import { ConfirmPicksScreen } from './screens/ConfirmPicksScreen'
 import { GameWeekScreen } from './screens/GameWeekScreen'
 import { LeaderboardScreen } from './screens/LeaderboardScreen'
@@ -130,6 +131,8 @@ function App() {
           )}
         </>
       )}
+
+      <ResponsibleGamblingFooter />
     </div>
   )
 }
