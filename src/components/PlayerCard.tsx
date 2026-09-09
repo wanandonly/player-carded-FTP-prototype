@@ -130,16 +130,15 @@ export function PlayerCard({
         </button>
       </div>
 
-      <div className="flex flex-col gap-2 rounded-lg border border-indigo-500/30 bg-indigo-500/10 px-3 py-2">
-        <div>
-          <p className="text-sm text-white mb-2">{player.name} to be booked</p>
-          <p className="text-xs text-slate-400">
-            Odds {fractionalOdds} · This would be the best available odds for
-            the player and could be themed to that bookmaker
-          </p>
-        </div>
-        <span className="self-end rounded-lg bg-indigo-500 px-3 py-2 text-xs font-semibold text-white">
-          Add to betslip
+      <div className="flex items-center justify-between gap-3 rounded-lg border border-indigo-500/30 bg-indigo-500/10 px-3 py-2">
+        <p className="min-w-0 truncate text-sm text-white">
+          {player.name} to be booked
+        </p>
+        <span className="flex shrink-0 flex-col items-center rounded-lg bg-indigo-500 px-3 py-1.5 leading-tight text-white">
+          <span className="text-sm font-bold">{fractionalOdds}</span>
+          <span className="text-[9px] font-medium uppercase tracking-wide text-indigo-100">
+            Add to betslip
+          </span>
         </span>
       </div>
     </div>
